@@ -7,7 +7,6 @@
 # Feel free to use this tool if it helps you. If you use code from it in
 # another project, please credit Xieons-Gaming-Corner (XGC). We appreciate it.
 
-
 import getpass
 import sys
 import time
@@ -19,7 +18,7 @@ import requests  # type: ignore[import-not-found]
 
 BASE_URL = "https://discord.com/api/v10"
 LOG_FILE_NAME = "slash_cleaner_logs.txt"
-USER_AGENT = "XGC-Discord-Bot-Remote-Operations/1.3"
+USER_AGENT = "XGC-Discord-Bot-Remote-Operations/1.4"
 
 
 def get_run_directory() -> Path:
@@ -61,8 +60,8 @@ def api(
     """
     Performs an authenticated Discord API request.
 
-    Discord 429 responses are retried up to five times. JSON can be supplied
-    for POST, PUT, or PATCH requests.
+    Discord HTTP 429 responses are retried up to five times. JSON can be
+    supplied for POST, PUT, or PATCH requests.
     """
     for attempt in range(1, 6):
         response = session.request(
@@ -279,7 +278,8 @@ def remove_server_slash_commands(
 
     log_event(
         f"Server slash-command deletion complete; "
-        f"guild_id={guild_id}; deleted={deleted_count}; "
+        f"guild_id={guild_id}; "
+        f"deleted={deleted_count}; "
         f"remaining={len(remaining_commands)}."
     )
 
@@ -354,7 +354,7 @@ def remove_global_slash_commands(
     )
 
 
-def create_xgc_placeholder_global_command(
+def create_placeholder_global_command(
     session: requests.Session,
     app_id: str,
     app_name: str,
@@ -362,7 +362,7 @@ def create_xgc_placeholder_global_command(
     """
     Replaces ALL global application commands with exactly one command:
 
-        /xgc_placeholder
+        /placeholder
 
     This uses Discord's global bulk-overwrite API endpoint. It replaces
     global slash commands and global context-menu commands, not merely
@@ -408,7 +408,7 @@ def create_xgc_placeholder_global_command(
 
     print(
         "\nThe resulting global command list will contain only:\n"
-        "  /xgc_placeholder\n"
+        "  /placeholder\n"
         "  Description: This command is a placeholder and will fail\n"
     )
 
@@ -460,7 +460,8 @@ def create_xgc_placeholder_global_command(
     )
 
     print("\nGlobal command overwrite completed.")
-    print("Registered global command: /xgc_placeholder")
+    print("Registered global command: /placeholder")
+
     print(
         "No response handler was added, so invoking it is expected "
         "to result in a failed Discord interaction."
@@ -468,7 +469,7 @@ def create_xgc_placeholder_global_command(
 
     log_event(
         "Global application-command list overwritten with one command: "
-        "/xgc_placeholder."
+        "/placeholder."
     )
 
     if isinstance(registered_commands, list):
@@ -484,7 +485,7 @@ def create_xgc_placeholder_global_command(
             print(f"  {command_name} (type {command_type})")
 
         log_event(
-            "Verified xgc_placeholder global-command overwrite; "
+            "Verified placeholder global-command overwrite; "
             f"command_count={len(registered_commands)}."
         )
 
@@ -638,8 +639,8 @@ def view_install_statistics(
     session: requests.Session,
 ) -> None:
     """
-    Displays the aggregate install and OAuth authorization counts that
-    Discord includes in the current application object.
+    Displays aggregate install and OAuth authorization counts that Discord
+    includes in the current application object.
     """
     app = api(
         session,
@@ -698,7 +699,7 @@ def show_menu() -> str:
         "What bot remote operation do you want to do?\n\n"
         "  1. Remove server-specific slash commands\n"
         "  2. Remove global slash commands\n"
-        "  3. Create /xgc_placeholder and overwrite global commands\n"
+        "  3. Create /placeholder and overwrite global commands\n"
         "  4. View guilds / remove the bot from a selected guild\n"
         "  5. View application install / authorization statistics\n"
         "  6. Exit\n"
@@ -782,7 +783,7 @@ def main() -> None:
                 )
 
             elif choice == "3":
-                create_xgc_placeholder_global_command(
+                create_placeholder_global_command(
                     session=session,
                     app_id=app_id,
                     app_name=app_name,
