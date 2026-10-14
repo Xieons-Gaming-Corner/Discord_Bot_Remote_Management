@@ -1,4 +1,6 @@
 # XGC Discord Bot Remote Operations
+[![Discord Widget](https://discord.com/api/guilds/829181609156411463/widget.png?style=banner2)](https://discord.gg/Xieon)
+
 
 > Created by **Xieons-Gaming-Corner**  
 > Lead Developer: **Xieon**
